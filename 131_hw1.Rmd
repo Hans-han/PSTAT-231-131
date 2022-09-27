@@ -1,0 +1,98 @@
+---
+title: "PSTAT 231 HW1"
+author: "Zongyi Han"
+date: "2022-09-24"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{R}
+
+hist(ggplot2::mpg$hwy)
+library(ggplot2)
+ggplot(mpg, aes(hwy)) +
+  geom_histogram(bins=8,color="white")
+
+```
+Most cars have highway fuel effiency around 25~30mpg
+
+```{r}
+library(ggplot2)
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = cty, y = hwy))
+```
+higher city fuel efficiency higher highway efficiency 
+
+```{r}
+ggplot(data = mpg) + 
+  stat_count(mapping = aes(x = manufacturer))
+
+```
+```{r}
+a <- ggplot2::mpg
+a <- as.data.frame(table(a$manufacturer))
+
+a$Var1 = as.character(a$Var1)
+a
+p2 <- ggplot(a, aes(x = reorder(Var1, -Freq), y = Freq)) +
+         geom_bar(stat = 'identity')+coord_flip()
+p2
+```
+Dodge makes most car
+```{r}
+ggplot(data = mpg, mapping = aes(group=cyl, y = hwy)) + 
+  geom_boxplot()
+```
+less number of cyl , higher mpg on highway
+
+```{r}
+library(tidyverse)
+Matrx <- ggplot2::mpg %>%
+    select_if(is.numeric) %>%
+    cor(.)
+library(corrplot)
+corrplot(Matrx, method = 'number',type="lower", order = 'alphabet',bg = "grey") 
+```
+hwy are positively correlated with cty
+displ is positively correlated with cyl
+year is positively correlated with cyl and displ
+
+cyl is negatively correlated with cty
+displ is negatively correlated with cty
+hwy is negatively correlated with cyl and displ
+year is negatively correlated with cty
+
+These relationship make sense to me as it follows law of physics.
+No superise here.
+
+```{r}
+ggplot(data = mpg, mapping = aes(x=hwy, y = class)) + 
+  geom_boxplot(outlier.size = 0.5)+
+  #geom_point( position = position_jitterdodge(self))+
+  theme_light()+
+  xlab("Highway MPG")+
+  ylab("Vehicle Class")+
+  theme(panel.grid.minor = element_blank())
+
+ggplot(data = mpg, mapping = aes(x=hwy, y = class)) + 
+  geom_boxplot(outlier.size = 0.5)+
+  theme_light()+
+  geom_jitter(color="black", size=0.4, alpha=0.4,stackdir = 'center')+
+  xlab("Highway MPG")+
+  ylab("Vehicle Class")+
+  theme(panel.grid.minor = element_blank())
+```
+```{r}
+p <- ggplot(mpg, aes(x = class, y = hwy,fill = factor(drv)))
+p + geom_boxplot() 
+#cite from https://ggplot2.tidyverse.org/reference/position_dodge.html with modification
+```
+```{r}
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_point(aes(colour = drv)) +
+  geom_smooth(aes(linetype = drv), se = FALSE)
+```
+

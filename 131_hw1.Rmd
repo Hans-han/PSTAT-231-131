@@ -3,34 +3,79 @@ title: "PSTAT 231 HW1"
 author: "Zongyi Han"
 date: "2022-09-24"
 output: pdf_document
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{R}
+## Answer1.
 
-hist(ggplot2::mpg$hwy)
+Supervised learning is one-to-one maps 1 inputs to 1 output  
+Unsupervised learning can discover patterns in data sets without human
+intervention(labeling)  
+The difference between them is that supervised learning needs labeling 
+but unsupervised learning *doesn't* need labeling.
+
+## Answer2.
+
+Regression takes Quantitative data  
+Classification takes qualitative data
+
+## Answer3.
+
+For Regression ML, the metrics are MSE&RMSE  
+For Classification ML, the metrics are F-1 score and AUC-ROC
+
+## Answer4.
+
+Descriptive model: Chose model best emphasize trend visually  
+Inferentialmodel: To test theories, state relationship between outcome and predictor  
+Predicative model: Predict Y with minimal error
+
+## Answer5.
+-Mechanistic is parametric  
+  Empirically-driven is non-parametric.  
+  -Mechanistic has less flexibility and needs assumptions. Latter does not need those things  
+  both of them can be over fitting.  
+  -Mechanistic can be easier to be understood b/c it has less flexibility.  
+  -Bias-Variance trade off depends on flexibility of the methods, higher flexibility means low         bias-variance trade off. One can expect mechanistic to have higher bias compare to empirically-driven model.
+
+## Answer6.
+-Inferential. Assume voters in favor of candidate then use informational method to test if we accept $H_0$
+-Predictive, b/c there is no assumption to be made.
+
+
+## Exercise 1
+```{R}
 library(ggplot2)
 ggplot(mpg, aes(hwy)) +
   geom_histogram(bins=8,color="white")
 
 ```
-Most cars have highway fuel effiency around 25~30mpg
 
+Most cars have highway fuel efficiency around 25\~30mpg
+
+##Exercise 2
 ```{r}
 library(ggplot2)
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = cty, y = hwy))
 ```
-higher city fuel efficiency higher highway efficiency 
 
+higher city fuel efficiency higher highway efficiency
+
+## Exercise 3
 ```{r}
 ggplot(data = mpg) + 
   stat_count(mapping = aes(x = manufacturer))
 
 ```
+
+## Exercise 4
 ```{r}
 a <- ggplot2::mpg
 a <- as.data.frame(table(a$manufacturer))
@@ -41,13 +86,18 @@ p2 <- ggplot(a, aes(x = reorder(Var1, -Freq), y = Freq)) +
          geom_bar(stat = 'identity')+coord_flip()
 p2
 ```
+
 Dodge makes most car
+
+## Exercise 5
 ```{r}
 ggplot(data = mpg, mapping = aes(group=cyl, y = hwy)) + 
   geom_boxplot()
 ```
+
 less number of cyl , higher mpg on highway
 
+## Exercise 6
 ```{r}
 library(tidyverse)
 Matrx <- ggplot2::mpg %>%
@@ -56,18 +106,18 @@ Matrx <- ggplot2::mpg %>%
 library(corrplot)
 corrplot(Matrx, method = 'number',type="lower", order = 'alphabet',bg = "grey") 
 ```
-hwy are positively correlated with cty
-displ is positively correlated with cyl
-year is positively correlated with cyl and displ
 
-cyl is negatively correlated with cty
-displ is negatively correlated with cty
-hwy is negatively correlated with cyl and displ
-year is negatively correlated with cty
+hwy are positively correlated with cty displ is positively correlated
+with cyl year is positively correlated with cyl and displ
 
-These relationship make sense to me as it follows law of physics.
-No superise here.
+cyl is negatively correlated with cty displ is negatively correlated
+with cty hwy is negatively correlated with cyl and displ year is
+negatively correlated with cty
 
+These relationship make sense to me as it follows law of physics. No
+superise here.
+
+## Exercise 7
 ```{r}
 ggplot(data = mpg, mapping = aes(x=hwy, y = class)) + 
   geom_boxplot(outlier.size = 0.5)+
@@ -85,14 +135,16 @@ ggplot(data = mpg, mapping = aes(x=hwy, y = class)) +
   ylab("Vehicle Class")+
   theme(panel.grid.minor = element_blank())
 ```
+
+## Exercise 8
 ```{r}
 p <- ggplot(mpg, aes(x = class, y = hwy,fill = factor(drv)))
 p + geom_boxplot() 
 #cite from https://ggplot2.tidyverse.org/reference/position_dodge.html with modification
 ```
+## Exercise 9
 ```{r}
 ggplot(mpg, aes(x = displ, y = hwy)) +
   geom_point(aes(colour = drv)) +
   geom_smooth(aes(linetype = drv), se = FALSE)
 ```
-

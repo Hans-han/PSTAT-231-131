@@ -57,16 +57,16 @@ ggplot(mpg, aes(hwy)) +
 
 ```
 
-Most cars have highway fuel efficiency around 25\~30mpg
+Most cars have highway fuel efficiency around 20\~30mpg
 
-##Exercise 2
+## Exercise 2
 ```{r}
 library(ggplot2)
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = cty, y = hwy))
 ```
 
-higher city fuel efficiency higher highway efficiency
+higher city fuel efficiency higher highway fuel efficiency
 
 ## Exercise 3
 ```{r}

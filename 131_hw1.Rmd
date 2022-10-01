@@ -53,7 +53,7 @@ Predicative model: Predict Y with minimal error
 ```{R}
 library(ggplot2)
 ggplot(mpg, aes(hwy)) +
-  geom_histogram(bins=8,color="white")
+  geom_histogram(bins=30,color="white")
 
 ```
 
@@ -68,14 +68,8 @@ ggplot(data = mpg) +
 
 higher city fuel efficiency higher highway fuel efficiency
 
-## Exercise 3
-```{r}
-ggplot(data = mpg) + 
-  stat_count(mapping = aes(x = manufacturer))
 
-```
-
-## Exercise 4
+## Exercise 3 
 ```{r}
 a <- ggplot2::mpg
 a <- as.data.frame(table(a$manufacturer))
@@ -87,17 +81,17 @@ p2 <- ggplot(a, aes(x = reorder(Var1, -Freq), y = Freq)) +
 p2
 ```
 
-Dodge makes most car
+Dodge makes most carss and Lincoln makes least number of cars
 
-## Exercise 5
+## Exercise 4
 ```{r}
-ggplot(data = mpg, mapping = aes(group=cyl, y = hwy)) + 
+ggplot(data = mpg, mapping = aes(group=cyl, y = hwy,color = factor(cyl))) + 
   geom_boxplot()
 ```
 
 less number of cyl , higher mpg on highway
 
-## Exercise 6
+## Exercise 5
 ```{r}
 library(tidyverse)
 Matrx <- ggplot2::mpg %>%
@@ -117,16 +111,8 @@ negatively correlated with cty
 These relationship make sense to me as it follows law of physics. No
 superise here.
 
-## Exercise 7
+## Exercise 6
 ```{r}
-ggplot(data = mpg, mapping = aes(x=hwy, y = class)) + 
-  geom_boxplot(outlier.size = 0.5)+
-  #geom_point( position = position_jitterdodge(self))+
-  theme_light()+
-  xlab("Highway MPG")+
-  ylab("Vehicle Class")+
-  theme(panel.grid.minor = element_blank())
-
 ggplot(data = mpg, mapping = aes(x=hwy, y = class)) + 
   geom_boxplot(outlier.size = 0.5)+
   theme_light()+
@@ -136,13 +122,13 @@ ggplot(data = mpg, mapping = aes(x=hwy, y = class)) +
   theme(panel.grid.minor = element_blank())
 ```
 
-## Exercise 8
+## Exercise 7
 ```{r}
 p <- ggplot(mpg, aes(x = class, y = hwy,fill = factor(drv)))
 p + geom_boxplot() 
 #cite from https://ggplot2.tidyverse.org/reference/position_dodge.html with modification
 ```
-## Exercise 9
+## Exercise 8
 ```{r}
 ggplot(mpg, aes(x = displ, y = hwy)) +
   geom_point(aes(colour = drv)) +

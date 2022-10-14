@@ -1769,42 +1769,13 @@ test_case &lt;- data.frame(type,longest_shell,diameter,height,whole_weight,shuck
 
 lm_fit &lt;- fit(wkfl,aba_training) 
         
-#predict(lm_fit,test_case)
-lm_fit</code></pre>
-<pre><code>## ══ Workflow [trained] ══════════════════════════════════════════════════════════
-## Preprocessor: Recipe
-## Model: linear_reg()
-## 
-## ── Preprocessor ────────────────────────────────────────────────────────────────
-## 6 Recipe Steps
-## 
-## • step_dummy()
-## • step_center()
-## • step_scale()
-## • step_interact()
-## • step_interact()
-## • step_interact()
-## 
-## ── Model ───────────────────────────────────────────────────────────────────────
-## 
-## Call:
-## stats::lm(formula = ..y ~ ., data = data)
-## 
-## Coefficients:
-##                   (Intercept)                  longest_shell  
-##                        4.3708                         3.3263  
-##                      diameter                         height  
-##                       20.1693                        11.7145  
-##                  whole_weight                 shucked_weight  
-##                        9.7445                       -18.3750  
-##                viscera_weight                   shell_weight  
-##                       -9.2047                        11.9598  
-##                        type_I                         type_M  
-##                       -2.0203                        -0.5941  
-##       type_I_x_shucked_weight        type_M_x_shucked_weight  
-##                        4.3301                         1.3790  
-##      longest_shell_x_diameter  shucked_weight_x_shell_weight  
-##                      -29.4486                        -1.7523</code></pre>
+predict(lm_fit,test_case)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[".pred"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"22.49369"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>#lm_fit</code></pre>
 </div>
 <div id="question-7" class="section level3">
 <h3>Question 7</h3>
@@ -1866,8 +1837,9 @@ is irreducible error</p>
 <h4>Question 9</h4>
 <p>Using the bias-variance tradeoff above, demonstrate that the expected
 test error is always at least as large as the irreducible error.</p>
-<p>If we minimize Var(<span class="math inline">\(\hat{f}(x_0)\)</span>)+<span class="math inline">\([Bias(\hat{f}(x_0))]^2\)</span> to zero, then the
-only left is <span class="math inline">\(Var(\epsilon)\)</span></p>
+<p>If we take <span class="math inline">\(\hat{f}(x_0)=E[Y|X=x_0]\)</span> which minimize
+Var(<span class="math inline">\(\hat{f}(x_0)\)</span>)+<span class="math inline">\([Bias(\hat{f}(x_0))]^2\)</span> to zero, then the
+only term left is <span class="math inline">\(Var(\epsilon)\)</span></p>
 </div>
 <div id="question-10" class="section level4">
 <h4>Question 10</h4>
@@ -1878,10 +1850,45 @@ only left is <span class="math inline">\(Var(\epsilon)\)</span></p>
 <li>reorganize terms in the expected test error by adding and
 subtracting <span class="math inline">\(E[\hat{f}(x_0)]\)</span></li>
 </ul>
-<p>Err(<span class="math inline">\(x_{0}\)</span>) = <span class="math inline">\(E[Y-\hat{f}(x_0)|X = x_0]\)</span> = <span class="math inline">\(\sigma_{\epsilon}^{2}+[E\hat{f}(x_0)-f(x_0)]^{2}+E[\hat{f}(x_0)-E\hat{f}(x_0)]^{2}\)</span>
-= <span class="math inline">\(\sigma_{\epsilon}^{2}+Bias^{2}(\hat{f}(x_0))+Var(\hat{f}(x_0))\)</span>
-= Irreducible Error + <span class="math inline">\(Bias^{2}\)</span> +
-Variance</p>
+<span class="math display">\[\begin{aligned}
+Err(x_{0})   &amp;= E[Y-\hat{f}(x_0)|X = x_0]\\
+             &amp;=
+\sigma_{\epsilon}^{2}+[E\hat{f}(x_0)-f(x_0)]^{2}+E[\hat{f}(x_0)-E\hat{f}(x_0)]^{2}\\
+             &amp;=
+\sigma_{\epsilon}^{2}+Bias^{2}(\hat{f}(x_0))+Var(\hat{f}(x_0)) \\
+             &amp;= Irreducible\ Error + Bias^{2} + Variance
+\end{aligned}\]</span>
+<p>Expansion below:</p>
+<span class="math display">\[\begin{aligned}
+E\left[\left(y_0-\hat{f}\left(x_0\right)^2\right]\right.&amp;=E\left[\left(f\left(x_0\right)+\epsilon+\hat{f}\left(x_0\right)\right)^2\right]
+\\
+&amp;=E\left[f\left(x_0\right)-\hat{f}\left(x_0\right)^2\right]+E\left[\epsilon^2\right]+2
+E\left[\left(f\left(x_0\right)-\hat{f}\left(x_0\right)\right)\right]
+E[\epsilon] \\
+&amp;=E\left[f\left(x_0\right)-\hat{f}\left(x_0\right)^2\right]+\operatorname{Var}(\epsilon)
+\end{aligned}\]</span>
+<span class="math display">\[\begin{aligned}
+E\left[f\left(x_0\right)-\hat{f}\left(x_0\right)^2\right]
+&amp;=E\left[\left(\left(f\left(x_0\right)-E\left[\hat{f}\left(x_0\right)\right]\right)-\left(\hat{f}\left(x_0\right)-E\left[\hat{f}\left(x_0\right)\right]\right)\right)^2\right]
+\\
+&amp;\left.=E\left[\left(E\left[\hat{f}\left(x_0\right)\right]-f\left(x_0\right)\right)^2\right]+E\left[\hat{f}\left(x_0\right)-E\left[\hat{f}\left(x_0\right)\right]\right)^2\right]
+\\
+&amp;-2
+E\left[\left(f\left(x_0\right)-E\left[\hat{f}\left(x_0\right)\right]\right)\left(\hat{f}\left(x_0\right)-E\left[\hat{f}\left(x_0\right)\right]\right)\right]
+\\
+&amp;\left.=\left(E\left[\hat{f}\left(x_0\right)\right]-f\left(x_0\right)\right)^2+E\left[\hat{f}\left(x_0\right)-E\left[\hat{f}\left(x_0\right)\right]\right)^2\right]
+\\
+&amp;-2\left(f\left(x_0\right)-E\left[\hat{f}\left(x_0\right)\right]\right)
+E\left[\left(\hat{f}\left(x_0\right)-E\left[\hat{f}\left(x_0\right)\right]\right)\right]
+\\
+&amp;\left.=\left(E\left[\hat{f}\left(x_0\right)\right]-f\left(x_0\right)\right)^2+E\left[\hat{f}\left(x_0\right)-E\left[\hat{f}\left(x_0\right)\right]\right)^2\right]
+\\
+&amp;-2\left(f\left(x_0\right)-E\left[\hat{f}\left(x_0\right)\right]\right)\left(E\left[\hat{f}\left(x_0\right)\right]-E\left[\hat{f}\left(x_0\right)\right]\right)
+\\
+&amp;\left.=\left(E\left[\hat{f}\left(x_0\right)\right]-f\left(x_0\right)\right)^2+E\left[\hat{f}\left(x_0\right)-E\left[\hat{f}\left(x_0\right)\right]\right)^2\right]
+\\
+&amp;=\left[\operatorname{Bias}\left(\hat{f}\left(x_0\right)\right)\right]^2+\operatorname{Var}\left(\hat{f}\left(x_0\right)\right)
+\end{aligned}\]</span>
 </div>
 </div>
 </div>

@@ -1,0 +1,115 @@
+---
+title: "project 231"
+author: "Zongyi Han"
+date: "2022-11-14"
+output: html_document
+---
+
+## Introduction
+The purpose of this project is to predict Gold spot price as it can be used as a measurement of chaosness in the world. The project use supervised  model. 
+Porject consisted of two part:
+1.explore relationship between variables and perforem necessary adjustment
+2.fit model and forecast
+
+## What is GLD?
+GLD is a ETF listed on NYSE, it tracked gold spot price closely.
+
+## Why this project can be usful?
+It can give directional advise on price movement and people may infer from the gold price to trade or make judgement on economic strength(Gold price inversely relates with real rate).
+
+## 1.0 Data collection and cleaning
+
+```{r,echo=FALSE}
+suppressMessages(library(tidyquant))
+gld <- tq_get("gld") %>% 
+       na.omit() %>% 
+       tq_transmute(select = close,
+                    mutate_fun = to.monthly,
+                    col_rename = "gld monthly close",
+                    indexAt="firstof")
+head(gld)# here is the data
+  #length(gld)
+```
+
+```{r,echo=FALSE}
+UR <- tq_get("UNRATE", get = "economic.data") %>% 
+    na.omit() %>% 
+    tq_transmute(mutate_fun = to.period,
+                 period     = "months", 
+                 col_rename = "unemployment rate",
+                 indexAt="firstof")
+head(UR)
+```
+
+```{r,echo=FALSE}
+us10y <- tq_get("DGS10", get = "economic.data") %>% 
+    na.omit() %>% 
+    tq_transmute(mutate_fun = to.period,
+                 period     = "months", 
+                 col_rename = "US10 yield",
+                 indexAt="firstof")
+head(us10y)
+```
+
+```{r,echo=FALSE}
+total_asset <- tq_get("WALCL", get = "economic.data") %>% 
+    na.omit() %>% 
+    tq_transmute(mutate_fun = to.period,
+                 period     = "months", 
+                 col_rename = "total asset",
+                 indexAt="firstof")
+head(total_asset)
+```
+
+```{r,echo=FALSE}
+infl_expect <- tq_get("MICH", get = "economic.data") %>% 
+    na.omit() %>% 
+    tq_transmute(mutate_fun = to.period,
+                 period     = "months", 
+                 col_rename = "inflation expectation",
+                 indexAt="firstof")
+head(infl_expect)
+```
+
+```{r,echo=FALSE}
+dxy <- tq_get("DX-Y.NYB") %>% 
+  na.omit() %>% 
+  tq_transmute(select = close,
+                    mutate_fun = to.monthly,
+                    col_rename = "dxy monthly close",
+                    indexAt="firstof")
+head(dxy)
+```
+section note:
+There is missing value in DXY so we need to deal with it using na.omit() and after first step cleaning each data frame will have no N/A value.
+
+# Explorarotory data analysis
+
+It's well known large sample should more or less follow Normal(Guassian) distribution. so we plot histagram of gld(23970 obs)
+
+```{r distribution of gld,echo=FALSE}
+library(ggplot2)
+library(fitdistrplus)
+ggplot(gld,aes(x=close))+
+  geom_histogram(bins = 50, color = "white")+
+  labs(title = "Histogram of gld price at close") +
+  theme_bw()
+descdist(gld$close, discrete = FALSE)
+```
+
+Clearly the gold etf price at market close is more $\beta$ distributed than normal distributed.
+
+Now we explore the correlation between predictors to make sure they are not identical 
+And because they differs in size, I will pick the the data from year 
+```{r cov between variables,echo=FALSE}
+df <- data.frame(gld$`gld monthly close`[1:96],
+                 UR$`unemployment rate`[1:96],
+                 us10y$`US10 yield`[1:96],
+                 dxy$`dxy monthly close`[1:96],
+                 infl_expect$`inflation expectation`[1:96],
+                 total_asset$`total asset`[1:96])
+
+```
+
+
+
